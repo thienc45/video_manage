@@ -1,0 +1,39 @@
+
+
+version: '3'
+services:
+  postgres:
+    build:
+      context: ./postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  spring-app:
+    build:
+      context: .
+    ports:
+      - "8081:8081"  # Map port 8081 on host to 8081 in container
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/db_api
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123456
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      BEZKODER_APP_JWTSECRET: ======================BezKoderSpring=============================
+      BEZKODER_APP_JWTEXPIRATIONMS: 864000000
+      SPRINGDOCS_APIDOCS_PATH: /api-docs
+      SPRING_MVC_STATIC_PATH_PATTERN: /webapp/**
+      SPRINGDOCS_SWAGGERUI_PATH: /swagger-ui-custom.html
+      SPRING_SERVLET_MULTIPART_ENABLED: true
+      SPRING_SERVLET_MULTIPART_FILE_SIZE_THRESHOLD: 2KB
+      SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE: 200MB
+      SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE: 215MB
+      SPRING_JACKSON_PARSER_ALLOW_UNQUOTED_CONTROL_CHARS: true
+      PROJECT_VIDEO: videos/
+#      PROJECT_URL: http://localhost:8081:
+
+volumes:
+  pgdata:

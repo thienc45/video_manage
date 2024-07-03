@@ -1,0 +1,8 @@
+
+FROM postgres:latest
+
+ENV POSTGRES_DB=db_api
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=123456
+
+

@@ -1,0 +1,39 @@
+version: '3'
+services:
+  postgres:
+    build:
+      context: ./be_video/postgres
+    image: postgres_image:latest
+    container_name: postgres_container
+    ports:
+      - "${POSTGRES_HOST_PORT}:${POSTGRES_CONTAINER_PORT}"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  spring-app:
+    build:
+      context: ./be_video
+    image: backend_image:v1.0
+    container_name: spring_app_container
+    ports:
+      - "${SPRING_APP_HOST_PORT}:${SPRING_APP_CONTAINER_PORT}"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+
+  frontend:
+    build:
+      context: ./fe_video
+    image: frontend_image:v1.0
+    container_name: frontend_container
+    ports:
+      - "${FRONTEND_HOST_PORT}:${FRONTEND_CONTAINER_PORT}"
+    volumes:
+      - ./fe_video:/app
+
+volumes:
+  pgdata:
